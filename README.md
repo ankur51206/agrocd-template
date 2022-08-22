@@ -51,7 +51,7 @@ Prerequisites:
 - DNS access to map domain with agrocd.
 - SSL certificate. (Here we can use letsencrypt as well with Kubernetes cert manager.)
 
- After creating necessory menifests for ingress and cert manager, we will be able to route requests to domain name.
+ After creating necessary manifests for ingress and cert manager, we will be able to route requests to domain names.
  
  To use this repository as sample deployment:
  
