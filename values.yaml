@@ -1,0 +1,68 @@
+####---------------------------------------------------------------------------
+deployment:
+   projectName: helm-template
+   namespace: default
+   imagename: nginx
+   imagetag: 1.19.0
+   imagepullsec: ecrreg       # Comment to disable
+   cpuLimit: 300m             # Guaranteed QOS Class, Comment if you want to use BestEffort
+   memoryLimit: 500Mi
+   port:
+    - 3000
+    - 4000
+
+svc:
+   clustertype: ClusterIP     # Support: LoadBalancer, NodePort, ClusterIP
+   fdqn: demo.helm.template
+
+hpa:
+   enabled: false
+   minReplicas: 1
+   maxReplicas: 2
+   cpuUtilization: 80
+  
+pvc:
+   enabled: false
+   storageClassName: nfs-provisioner
+
+   mount:
+   - pvName: pv1 
+     mountPath: /mnt
+     storageSize: 8Gi
+   - pvName: pv2
+     mountPath: /opt
+     storageSize: 1Gi
+
+####--------------------------- ENVIRONMENT VARIABLES ---------------------------------
+
+env:
+  enabled: false         # This will disable All ENV values including crd, crdMulti.
+  data:
+  - name: NODE_ENV
+    value: "development"
+  - name: API_PORT
+    value: "3000"
+  - name: NAME
+    value: "Template API"
+#
+# Kubernetes Secret ENV
+crd:                      # Single secret with multiple value. No need to encrypt b64.
+  enabled: false
+  creds:
+  - name: pgadmin
+    key: passwd
+  - name: mysql
+    key: mysqlpasswd
+
+##
+crdMulti:                # Multiple Secret. Need to encrypt b64
+  enabled: false
+  creds:
+  - secretName: redis    # Represent secret name of credentials.
+    name: redisuser
+    key: cnBhc3N3ZA==
+  - secretName: nosql    # Represent secret name of credentials.
+    name: couchdb
+    key: cnBhc3N3ZA==
+
+####----------------------------------------------------------------------------
