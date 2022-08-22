@@ -55,4 +55,6 @@ Prerequisites:
  
  To use this repository as sample deployment:
  
- 
+ - Connect Agrocd.
+ - Create new application to agrocd.
+ - Use this template to deploy sample nginx page by adding this repository in git option.
