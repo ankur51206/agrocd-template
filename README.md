@@ -36,10 +36,23 @@ Installation:
 - kubectl create namespace argocd
 - kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 - kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
-For password export: 
-- kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 - kubectl port-forward svc/argocd-server -n argocd 8080:443
+- kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo (By this you will get password of admin. That is you can change afterwards.)
 
-By this you can get an IP address to use agrocd. There are several additional steps in order to use agrocd as domain name.
 
--  
+To manage agrocd via Domain name:
+
+- Argo CD serves multiple protocols (gRPC/HTTPS) on the same port (443), this provides a challenge when attempting to define a single nginx ingress object and rule for the argocd-service, since the nginx.ingress.kubernetes.io/backend-protocol annotation accepts only a single value for the backend protocol (e.g. HTTP, HTTPS, GRPC, GRPCS).
+- In order to expose the Argo CD API server with a single ingress rule and hostname, the nginx.ingress.kubernetes.io/ssl-passthrough annotation must be used to passthrough TLS connections and terminate TLS at the Argo CD API server.
+
+Prerequisites:
+
+- To proceed with domain name, we will need an selective domain name.
+- DNS access to map domain with agrocd.
+- SSL certificate. (Here we can use letsencrypt as well with Kubernetes cert manager.)
+
+ After creating necessory menifests for ingress and cert manager, we will be able to route requests to domain name.
+ 
+ To use this repository as sample deployment:
+ 
+ 
